@@ -1,0 +1,17 @@
+spring:
+
+  security:
+    user:
+      name: admin
+      password: admin
+  thymeleaf:
+    enabled: true
+    encoding: utf-8
+    check-template-location: true
+    mode: HTML5
+    suffix: .html
+    servlet:
+      content-type: text/html
+    prefix: classpath:/templates/
+    cache: false
+
