@@ -4,9 +4,9 @@ spring:
     encoding: utf-8
     check-template-location: true
     mode: HTML5
+    prefix: classpath:/templates/
     suffix: .html
     servlet:
       content-type: text/html
-    prefix: classpath:/templates/
     cache: false
 

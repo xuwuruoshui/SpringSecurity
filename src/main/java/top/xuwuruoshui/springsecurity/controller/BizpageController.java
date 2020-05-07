@@ -3,6 +3,7 @@ package top.xuwuruoshui.springsecurity.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class BizpageController {
@@ -41,5 +42,11 @@ public class BizpageController {
     @GetMapping("/biz2")
     public String deleteOrder() {
         return "biz2";
+    }
+
+    @GetMapping("/haha")
+    @ResponseBody
+    public String test(){
+        return "haha";
     }
 }
