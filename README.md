@@ -6,5 +6,8 @@
 >服务器接受请求,被`BasicAuthenticationFilter`拦截，提取`Authorization`的Header值，再用Base64进行解码，最后将用户名和密码和解码的结果进行比对
 
 # 2. FormLogin模式
+- 客制化登录界面
+- 加密
+- 角色、资源权限控制(role不能和authorities一起用，分开用可以)
+- 登录成功失败的处理
 
-111
