@@ -5,8 +5,8 @@ spring:
     check-template-location: true
     mode: HTML5
     suffix: .html
+    prefix: classpath:/templates/
     servlet:
       content-type: text/html
-    prefix: classpath:/templates/
     cache: false
 

@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -32,14 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")//form中用户名输入框input的name名，不修改的话默认
                 .passwordParameter("password")//form中密码输入框input的namem名，不修改的话默认是password
                 //.defaultSuccessUrl("/index")//登录成功后默认跳转的路径index
-                .successHandler((request, response, authentication) -> {
-                    response.setContentType("application/json;charset=utf-8");
-                    RequestCache cache = new HttpSessionRequestCache();
-                    SavedRequest savedRequest = cache.getRequest(request, response);
-                    String url = savedRequest.getRedirectUrl();
-                    response.sendRedirect(url);
-
-                })//实现登陆后返回之前用户想访问的页面，需要手动实现AuthenticationSuccessHandler
+                .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())//实现登陆后返回之前用户想访问的页面，需要手动实现AuthenticationSuccessHandler
                 .and()
                 .authorizeRequests()
                 .antMatchers("/login.html","/login").permitAll()
