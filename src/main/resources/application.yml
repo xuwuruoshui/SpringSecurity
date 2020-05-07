@@ -1,9 +1,4 @@
 spring:
-
-  security:
-    user:
-      name: admin
-      password: admin
   thymeleaf:
     enabled: true
     encoding: utf-8
