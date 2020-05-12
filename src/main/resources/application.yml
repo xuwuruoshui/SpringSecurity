@@ -9,4 +9,19 @@ spring:
     servlet:
       content-type: text/html
     cache: false
+#亲测无效
+#  session:
+#    timeout: 60s
+
+#超时设置
+server:
+  servlet:
+    session:
+      timeout: 60s
+      cookie:
+      #js脚本不能访问cookie
+        http-only: true
+        secure: false
+
+
 

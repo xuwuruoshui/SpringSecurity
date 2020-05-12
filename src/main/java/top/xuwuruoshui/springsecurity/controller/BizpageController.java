@@ -42,4 +42,9 @@ public class BizpageController {
     public String deleteOrder() {
         return "biz2";
     }
+
+    @GetMapping("/timeout")
+    public String timeout() {
+        return "timeout";
+    }
 }
