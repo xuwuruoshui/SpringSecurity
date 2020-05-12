@@ -1,6 +1,7 @@
 package top.xuwuruoshui.springsecurity.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,6 +23,8 @@ import java.util.Map;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private MyUserDetailsService myUserDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -35,16 +38,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())//实现登陆后返回之前用户想访问的页面，需要手动实现AuthenticationSuccessHandler
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login.html","/login","/timeout.html","/timeout").permitAll()
+                .antMatchers("/login.html","/login","/timeout.html").permitAll()
                 .antMatchers("/biz1","/biz2").hasAnyAuthority("ROLE_user","ROLE_admin")
                 //.antMatchers("/syslog","/sysuser").hasAnyRole("admin")
-                .antMatchers("/syslog").hasAnyAuthority("sys:log")
-                .antMatchers("/sysuser").hasAnyAuthority("sys:user")
+                .antMatchers("/syslog").hasAnyAuthority("/syslog")
+                .antMatchers("/sysuser").hasAnyAuthority("/sysuser")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)//always ifRequired(默认) never stateless
-                .invalidSessionUrl("/timeout")//会话超时
+                .invalidSessionUrl("/index")//会话超时
                 .maximumSessions(1)//一个用户在线数为1
                 .maxSessionsPreventsLogin(false)//false,挤掉之前登录的 true,登录过了,其他地方不能登录
                 .expiredSessionStrategy(new SessionInformationExpiredStrategy() {
@@ -73,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
+/*        auth.inMemoryAuthentication()
                 .withUser("user")
                 .password(passwordEncoder().encode("root"))
                 .roles("user")
@@ -83,7 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorities("sys:log","sys:user","ROLE_admin")
                 //.roles("admin")//role和authorities不能同时用
                 .and()
-                .passwordEncoder(passwordEncoder());//使用BCrypt加密
+                .passwordEncoder(passwordEncoder());//使用BCrypt加密*/
+        auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
