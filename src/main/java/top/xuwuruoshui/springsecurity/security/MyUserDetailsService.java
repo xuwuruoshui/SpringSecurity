@@ -52,16 +52,6 @@ public class MyUserDetailsService implements UserDetailsService {
                         String.join(",",authorities)
                 )
         );
-
-        //方法2: lambda
-       /* List<GrantedAuthority> list = new ArrayList<>();
-        authorities.forEach(role->{
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
-            list.add(authority);
-        });
-        myUserDetails.setAuthorities(list);*/
-
-
         return user;
     }
 }

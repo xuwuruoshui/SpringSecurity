@@ -21,11 +21,6 @@ public class MyRBACService {
 
         if(principal instanceof UserDetails){
             UserDetails userDetails = ((UserDetails)principal);
-            /*String username = ((UserDetails)principal).getUsername();
-            List<String> urls = myUserDetailsServiceMapper.findUrlsByUserName(username);
-            return urls.stream().anyMatch(
-                    url -> antPathMatcher.match(url,request.getRequestURI())
-            );*/
 
             //由于登录时已经获取过权限了,只需要从内存中拿来与请求的url比对即可
             List<GrantedAuthority> authorityList =
