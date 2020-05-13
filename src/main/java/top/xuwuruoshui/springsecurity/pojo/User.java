@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 @Setter
-public class MyUserDetails implements UserDetails {
+public class User implements UserDetails {
     private String password;  //密码
     private String username;  //用户名
     private boolean accountNonExpired;   //是否没过期

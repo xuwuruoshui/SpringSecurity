@@ -26,3 +26,23 @@
 - cookie:防止通过脚本获取cookie,以及限制使用http或者https来发送cookie
 - 限制一个用户的登录数量
 
+# 4. RBAC权限管理
+
+> 基于角色权限控制: 用户--用户角色--角色--角色权限--权限
+
+> 步骤:
+
+1. 继承`WebSecurityConfigurerAdapter`,重写`configure(HttpSecurity http) `和`configure(AuthenticationManagerBuilder auth)`
+   - `configure(HttpSecurity http)`: 配置一些基本信息,通过权限表达式设置url权限
+   - `configure(AuthenticationManagerBuilder auth)`,从`UserDetailService`中设置用户角色权限
+2. 实体类`User`实现`UserDetails`(也可以用装饰者模式),添加getter,setter,用不到的字段都返回true
+3. 实现`UserDetailService`, 重写`loadUserByUsername`
+   - 根据`username`从数据库中获取`User`
+   - 根据`username`获取对应角色
+   - 根据这些角色查询出对应的权限
+   - 把角色和权限设置到`User`的`authorities`字段上(可以使用`AuthorityUtils.commaSeparatedStringToAuthorityList`工具进行转换)
+
+>Tip: 权限表达式(类SecurityExpressionRoot)
+>
+>方法权限控制,`WebSecurityConfigurerAdapter`的实现类上加入`@EnableGlobalMethodSecurity(prePostEnabled = true)`
+
