@@ -46,3 +46,9 @@
 >
 >方法权限控制,`WebSecurityConfigurerAdapter`的实现类上加入`@EnableGlobalMethodSecurity(prePostEnabled = true)`
 
+# 5. Remember me
+
+- 保存cookie到本地
+- 设置cookie时间
+- 保存cookie到数据库
+

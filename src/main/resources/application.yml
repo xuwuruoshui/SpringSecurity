@@ -13,6 +13,7 @@ spring:
     url: jdbc:mysql://127.0.0.1:6033/mydb
     username: root
     password: 123456
+
 #亲测无效
 #  session:
 #    timeout: 60s
