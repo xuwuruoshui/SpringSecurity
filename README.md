@@ -52,3 +52,8 @@
 - 设置cookie时间
 - 保存cookie到数据库
 
+# 6. Logout
+
+- 登出
+- 删cookie
+
