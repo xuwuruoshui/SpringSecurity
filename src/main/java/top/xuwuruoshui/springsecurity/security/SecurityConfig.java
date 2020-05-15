@@ -8,16 +8,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import top.xuwuruoshui.springsecurity.security.imagecode.CaptchaCodeFilter;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -27,29 +22,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final MyUserDetailsService myUserDetailsService;
     //被挤下线后的操作
     private final MySessionInformationExpiredStrategy mySessionInformationExpiredStrategy;
+    private CaptchaCodeFilter captchaCodeFilter;
 
 
 
-    public SecurityConfig(MyUserDetailsService myUserDetailsService, MySessionInformationExpiredStrategy mySessionInformationExpiredStrategy ) {
+    public SecurityConfig(MyUserDetailsService myUserDetailsService, MySessionInformationExpiredStrategy mySessionInformationExpiredStrategy, CaptchaCodeFilter captchaCodeFilter) {
         this.myUserDetailsService = myUserDetailsService;
         this.mySessionInformationExpiredStrategy = mySessionInformationExpiredStrategy;
+        this.captchaCodeFilter = captchaCodeFilter;
     }
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()//禁用跨站脚本攻击
-                .logout() //注销
-                .logoutUrl("/signout")
-                //.logoutSuccessUrl("/signout.html")//登录成功后的url
-                .logoutSuccessHandler(new LogoutSuccessHandler() {
-                    @Override
-                    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                        response.sendRedirect("/signout.html");
-                    }
-                })
-                .deleteCookies("JSESSIONID")
-                .and()
                 .formLogin()
                 .loginPage("/login.html")//用户未登录时，访问任何资源都跳转到该路径，即登录页面
                 .loginProcessingUrl("/login")//form中action的地址，也就是处理认证请求的路径
@@ -58,8 +44,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //.defaultSuccessUrl("/index")//登录成功后默认跳转的路径index
                 .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
                 .and()
+                //UsernamePasswordAuthenticationFilter前加一个图片验证码的filter
+                .addFilterBefore(captchaCodeFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/login.html","/login","/signout.html").permitAll()
+                .antMatchers("/login.html","/login","/kaptcha").permitAll()
                 .antMatchers("/index","/").authenticated()
                 .anyRequest().access("@myRBACService.hasPermission(request,authentication)")
                 .and()

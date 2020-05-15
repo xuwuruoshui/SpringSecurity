@@ -57,3 +57,6 @@
 - 登出
 - 删cookie
 
+# 7. ImageCode
+
+> 使用一种图片验证码框架比如(kaptcha),自行实现`spring`的`filter`,SpringSecurity中在`UsernamePasswordAuthenticationFilter`前添加一个`filter`就可以了
