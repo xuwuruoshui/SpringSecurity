@@ -60,3 +60,16 @@
 # 7. ImageCode
 
 > 使用一种图片验证码框架比如(kaptcha),自行实现`spring`的`filter`,SpringSecurity中在`UsernamePasswordAuthenticationFilter`前添加一个`filter`就可以了
+
+# 8. Smscode
+
+> 具体流程
+
+![image-20200518164032643](./image/smscode.png)
+
+1. 思路和ImageCode类似,但是登录时`springsecurity`并不知道你的请求,所以需要继承`AbstractAuthenticationProcessingFilter`来替代`UsernamePasswordAuthenticationFilter`,写法就直接copy了,去掉`password`字段.
+
+2. `UsernamePasswordAuthenticationToken`也跟着copy一个
+
+3. `provider`要根据`AuthenticationProvider`来实现,进而替代`DaoAuthenticationProvider`
+

@@ -10,9 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import top.xuwuruoshui.springsecurity.security.imagecode.CaptchaCodeFilter;
+import top.xuwuruoshui.springsecurity.security.handler.MyAuthenticationFailureHandler;
+import top.xuwuruoshui.springsecurity.security.handler.MyAuthenticationSuccessHandler;
+import top.xuwuruoshui.springsecurity.security.smscode.SmsCodeSecurityConfig;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -22,14 +22,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final MyUserDetailsService myUserDetailsService;
     //被挤下线后的操作
     private final MySessionInformationExpiredStrategy mySessionInformationExpiredStrategy;
-    private CaptchaCodeFilter captchaCodeFilter;
+    private final MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
+    private final MyAuthenticationFailureHandler myAuthenticationFailureHandler;
+    private final SmsCodeSecurityConfig smsCodeSecurityConfig;
 
 
 
-    public SecurityConfig(MyUserDetailsService myUserDetailsService, MySessionInformationExpiredStrategy mySessionInformationExpiredStrategy, CaptchaCodeFilter captchaCodeFilter) {
+    public SecurityConfig(MyUserDetailsService myUserDetailsService, MySessionInformationExpiredStrategy mySessionInformationExpiredStrategy, MyAuthenticationSuccessHandler myAuthenticationSuccessHandler, MyAuthenticationFailureHandler myAuthenticationFailureHandler, SmsCodeSecurityConfig smsCodeSecurityConfig) {
         this.myUserDetailsService = myUserDetailsService;
         this.mySessionInformationExpiredStrategy = mySessionInformationExpiredStrategy;
-        this.captchaCodeFilter = captchaCodeFilter;
+        this.myAuthenticationSuccessHandler = myAuthenticationSuccessHandler;
+        this.myAuthenticationFailureHandler = myAuthenticationFailureHandler;
+        this.smsCodeSecurityConfig = smsCodeSecurityConfig;
     }
 
 
@@ -38,16 +42,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()//禁用跨站脚本攻击
                 .formLogin()
                 .loginPage("/login.html")//用户未登录时，访问任何资源都跳转到该路径，即登录页面
-                .loginProcessingUrl("/login")//form中action的地址，也就是处理认证请求的路径
-                .usernameParameter("username")//form中用户名输入框input的name名，不修改的话默认
-                .passwordParameter("password")//form中密码输入框input的namem名，不修改的话默认是password
-                //.defaultSuccessUrl("/index")//登录成功后默认跳转的路径index
-                .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
+                .successHandler(myAuthenticationSuccessHandler)
+                .failureHandler(myAuthenticationFailureHandler)
                 .and()
-                //UsernamePasswordAuthenticationFilter前加一个图片验证码的filter
-                .addFilterBefore(captchaCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                .apply(smsCodeSecurityConfig)//启用自定义的短信验证码拦截器
+                .and()
                 .authorizeRequests()
-                .antMatchers("/login.html","/login","/kaptcha").permitAll()
+                .antMatchers("/login.html","/smscode","/smslogin").permitAll()
                 .antMatchers("/index","/").authenticated()
                 .anyRequest().access("@myRBACService.hasPermission(request,authentication)")
                 .and()

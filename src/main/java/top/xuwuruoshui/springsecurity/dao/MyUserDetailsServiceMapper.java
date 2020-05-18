@@ -12,7 +12,7 @@ public interface MyUserDetailsServiceMapper {
     //根据username查询用户信息
     @Select("SELECT username,password,enabled\n" +
             "FROM sys_user u\n" +
-            "WHERE u.username = #{username}")
+            "WHERE u.username = #{username} or u.phone= #{username}")
     User findByUserName(@Param("username") String username);
 
     //根据username查询用户角色
@@ -20,7 +20,7 @@ public interface MyUserDetailsServiceMapper {
             "FROM sys_role r\n" +
             "LEFT JOIN sys_user_role ur ON r.id = ur.role_id\n" +
             "LEFT JOIN sys_user u ON u.id = ur.user_id\n" +
-            "WHERE u.username = #{username}")
+            "WHERE u.username = #{username} or u.phone= #{username}")
     List<String> findRoleByUserName(@Param("username") String username);
 
 
@@ -47,6 +47,6 @@ public interface MyUserDetailsServiceMapper {
             "LEFT JOIN sys_role r ON r.id = rm.role_id\n" +
             "LEFT JOIN sys_user_role ur ON r.id = ur.role_id\n" +
             "LEFT JOIN sys_user u ON u.id = ur.user_id\n" +
-            "WHERE u.username = #{username}")
+            "WHERE u.username = #{username} or u.phone= #{username}")
     List<String> findUrlsByUserName(@Param("username") String username);
 }
