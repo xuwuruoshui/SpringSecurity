@@ -73,3 +73,9 @@
 
 3. `provider`要根据`AuthenticationProvider`来实现,进而替代`DaoAuthenticationProvider`
 
+# 9. JWT
+
+> JWT组成:加密方式+(过期时间+用户名+时间)+签名
+
+- 提供生成JWT生成的接口,刷新的接口
+- 添加一个JWT的过滤器,放在`UsernamePasswordAuthenticationFilter`之前

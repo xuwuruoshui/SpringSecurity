@@ -28,5 +28,8 @@ server:
         http-only: true
         secure: false
 
-
+jwt:
+  secret: fasdfas.uu923#@$;lfkasoja?:{L}F_a
+  expiration: 360000
+  header: jwt-header
 
