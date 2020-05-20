@@ -79,3 +79,7 @@
 
 - 提供生成JWT生成的接口,刷新的接口
 - 添加一个JWT的过滤器,放在`UsernamePasswordAuthenticationFilter`之前
+
+# 10. 跨域问题
+
+> 加个`cors`就可以了,不加的话任何配置跨域的方案都不起作用,加了后尽量使用`springsecurity`的跨域配置.
